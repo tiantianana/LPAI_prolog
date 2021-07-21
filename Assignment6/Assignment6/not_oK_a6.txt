@@ -1,0 +1,8 @@
+
+Testing file a6.pl  
+Query1: Your solution to subtask 6.1 is NOT equal to the wanted solution 6.1 .
+ For example, for isolate_final(a-b=<c-(d+e):->d,_11022) 
+ isolate_final(a-b=<c-(d+e):->d,d=<c-(a-b)-e:->d) 
+ is shown by the wanted solution, but not in your program's output  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  

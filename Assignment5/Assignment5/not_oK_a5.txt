@@ -1,0 +1,23 @@
+
+Testing file a5.pl  
+Query1: Your solution to subtask 5.1 is NOT equal to the wanted solution 5.1 .
+ For example, for move([hans,owns,2,forks],[[anna,owns,3,forks],[hans,owns,1,forks],[hans,owns,2,plates]],_13582) 
+ move([hans,owns,2,forks],[[anna,owns,3,forks],[hans,owns,1,forks],[hans,owns,2,plates]],[[anna,owns,3,forks],[hans,owns,2,forks],[hans,owns,2,plates]]) 
+ is shown by the wanted solution, but not in your program's output  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution to subtask 5.3 is NOT equal to the wanted solution 5.3 .
+ For example, for move([hans,owns,1,forks],[[anna,owns,3,forks],[hans,owns,2,forks]],_13582) 
+ move([hans,owns,1,forks],[[anna,owns,3,forks],[hans,owns,2,forks]],[[anna,owns,3,forks],[hans,owns,1,forks]]) 
+ is shown by the wanted solution, but not in your program's output  
+Query4: Your solution to subtask 5.4 is NOT equal to the wanted solution 5.4 .
+ For example, for move([anna,obtains,2,forks],[[anna,owns,2,plates],[anna,owns,3,forks]],_13582) 
+ move([anna,obtains,2,forks],[[anna,owns,2,plates],[anna,owns,3,forks]],[[anna,owns,2,plates],[anna,owns,5,forks]]) 
+ is shown by the wanted solution, but not in your program's output  
+Query5: Your solution to subtask 5.5 is NOT equal to the wanted solution 5.5 .
+ For example, for move([anna,takes,2,forks,hans],[[anna,owns,1,forks],[hans,owns,3,forks]],_13582) 
+ move([anna,takes,2,forks,hans],[[anna,owns,1,forks],[hans,owns,3,forks]],[[anna,owns,3,forks],[hans,owns,1,forks]]) 
+ is shown by the wanted solution, but not in your program's output  
+Query6: Your solution to subtask 5.6 is NOT equal to the wanted solution 5.6 .
+ For example, for move([anna,sells,2,forks,4,euros,hans],[[anna,owns,3,forks],[hans,owns,5,euros]],_13582) 
+ move([anna,sells,2,forks,4,euros,hans],[[anna,owns,3,forks],[hans,owns,5,euros]],[[anna,owns,1,forks],[anna,owns,4,euros],[hans,owns,1,euros],[hans,owns,2,forks]]) 
+ is shown by the wanted solution, but not in your program's output  

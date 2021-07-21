@@ -1,0 +1,413 @@
+
+ :- use_module(library(clpfd)).
+
+ %
+ % --------------------------------------------------------------------
+ % Assignment 4
+ % --------------------------------------------------------------------
+ %
+
+
+ % acyclic depth first search with parameter M for the Move
+ % adfsmr(+Move,+Source, -Destination, +PathSoFar, -Path)
+ adfsmr( _, S, S, P, P ).
+ adfsmr( M, S, D, Ptmp, P ) :-
+    Move =.. [ M, S, C ] ,            % construct single move to C
+    Move ,                            % try the move
+    \+ member( C, Ptmp ) ,            % C not yet visited - no cycle
+    adfsmr( M, C, D, [C|Ptmp], P ) .  % continue to search from C
+
+ % acyclic depth first search with parameter for Move returning Path
+ % adfsm(+Move,+Source, -Destination, +PathSoFar, -Path) -
+ adfsmp( M, S, D, P ) :-
+    adfsmr( M, S, D, [S], RP ) ,
+    reverse( RP, P ) .
+
+
+
+ % try: ?- idmr(ic,pb,Destination,Path) . --> [pb], [ks,pb], ...
+
+ % iterative deepening search + Path + variable Move
+ % idmr(+Move, +Source, -Destination, -Path_Reverse) -
+     idmr( _, S, S , [S] ) .
+     idmr( M, S, D ,[D|P]  ) :-
+         idmr( M, S, C, P ) ,
+         Move =.. [ M, C, D ] ,    % construct the call of move
+         Move .                    % call the move
+
+/*
+ % try: ?- idmp(ic,pb,Destination,Path) . --> pb, ks, pb, f, ks, pb, f, ...
+
+ % idmp(+Move, +Source, -Destination, -Path) - iterative deepening search + Path + Move
+ idmp( M, S, D, P ) :-
+    idmr(M,S,D,P_Rev) ,   % use M as move for iterative deepening
+    reverse(P_Rev,P).
+*/
+
+
+ % lidm(+Move,+Source, -Destination, -Path) limited iterative deepening
+ % search + Path - stops at a depth where 1st solution is found
+ % shows all solutions on that depth
+
+ lidm( M, S, D, P ) :-
+    length( P1 , N ) ,    % use length of first solution to limit length of other solutions
+    idmr(M,S,D,P1) ,      % search first solution by iterative deepening
+    ! ,                   % the first solutions exists for length N
+    length( RP, N ) ,     % limit reverse solution paths RP_Rev to length N
+    idmr(M,S,D,RP) ,      % reverse solution path P may differ from reverse of first path P1 found
+       % must not be idm here, because idm does not pass length limit of Path
+    reverse(RP,P) .
+
+
+
+ % ========================================================================
+ % 4.0 The jealous husbands puzzle
+ %
+ % In the jealous husbands (river-crossing) puzzle three married couples
+ % want to cross a river with a boat that can carry at most two persons,
+ % with the constraint that no woman shall be in the presence of another
+ % man (on the west side or on the east side or on the boat) unless her
+ % husband is also present.
+
+ % the jealous husbands (river-crossing) puzzle
+ lidm0(P) :-
+    S = s( west , [m(1),m(2),m(3),w(1),w(2),w(3)] , [] ) ,    % all stay west
+    D = s( east , [] , [m(1),m(2),m(3),w(1),w(2),w(3)] ) ,    % all stay east
+    lidm(move0,S,D,P) .   %  find a shortest path of moves to cross the river
+
+ % move0( +state(Boat,West,East) , -newstate(Boat,West,East) )
+ move0( s(west,West,East), s(east,Wnew,Enew) ) :- move0FT( West,East,Wnew,Enew ) .
+ move0( s(east,West,East), s(west,Wnew,Enew) ) :- move0FT( East,West,Enew,Wnew ) .
+
+ % move0FT( +FromStateOld , +ToStateOld , -FromStateNew , -ToStateNew )
+
+ move0FT( From , To , Fnew , Tnew ) :-
+    select( F , From , Fnew ) ,          % pick each element of From once, Fnew remain
+    safe0( Fnew ) ,                      % From-side is safe in new state
+    safe0( [F|To] ) ,                    % To-side is safe in new state
+    sort( [F|To] , Tnew ) .              % sort needed to have set property of Tnew
+
+ move0FT( From , To , Fnew2 , Tnew ) :-
+    select( F , From , From_F ) ,        % select element F from From to get From_F
+    select( F2 , From_F, Fnew2 ) ,       % select element F2 from From_F to get Fnew2
+    F @< F2 ,                            % select each pair (e.g. m(2)@<w(1)) only once
+    safe0( Fnew2 ) ,                     % From-side is safe in new state
+    safe0( [F,F2|To] ) ,                 % To-side is safe in new state
+    sort( [F,F2|To] , Tnew ) .           % sort needed to have set property of Tnew
+
+
+ safe0( L ) :- \+ (                      % side L is safe, if the following is NOT true:
+                   member( w(X) , L ) ,  % there is a woman w(X) on side L
+                   \+ member( m(X),L ),  % here husband m(X) is not on side L
+                   member( m(_) , L )    % and a (different) man is on side L
+                  ).
+
+
+
+
+ % =============================================================
+ % 4.1. The framer (river-crossing) puzzle
+ %
+ % A farmer has a wolf, a goat, and a cabbage and wants to cross a river
+ % from west to east with a boat that can at most carry him and one of
+ % his belongings, i.e. the wolf, the goat, or the cabbage.
+ % The constraint is that he farmer cannot leave the wolf and the goat
+ % alone on a side of the river, as the wolf would eat the goat, and
+ % the farmer cannot leave the goat and the cabbage alone, as the goat
+ % would eat the cabbage.
+
+ % Use limited iterative deepening search to solve the puzzle!
+ % Write a procedure move1(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle   AND
+ % write a procedure  lidm10(Path)  that describes the legal paths Path
+ % of safe moves from the start state, i.e., that all are on the west side
+ % to the end state, i.e., that all are on the east side.
+ %
+ % Model the states as s(F,W,G,C), where
+ % F=1 means farmer is west, F=0 means farmer is east
+ % W=1 means wolf is west, W=0 means wolf is east
+ % G=1 means goat is west, etc.
+ % e.g., s(1,1,1,0) means cabbage is east, all others are west
+ %
+ % Hint:
+ % Use the jealous husbands puzzle as a template.
+ % Redesign procedures for move and for safety check
+
+
+   lidm10(P) :-
+      S = s(1,1,1,1) ,    % all are in west
+      D = s(0,0,0,0) ,    % all stay east
+      lidm(move1,S,D,P) .   %  find a shortest path of moves to cross the river
+
+/*
+   statechange(1,0).
+   statechange(0,1).
+   move1(s(X,X,G,C),s(Y,Y,G,C)) :- statechange(X,Y),  \+ un_safe1(s(Y,Y,G,C)).
+   move1(s(X,W,X,C),s(Y,W,Y,C)) :- statechange(X,Y),  \+ un_safe1(s(Y,W,Y,C)).
+   move1(s(X,W,G,X),s(Y,W,G,Y)) :- statechange(X,Y),  \+ un_safe1(s(Y,W,G,Y)).
+   move1(s(X,W,G,C),s(Y,W,G,C)) :- statechange(X,Y),  \+ un_safe1(s(Y,W,G,C)).
+*/
+
+   move1FT( _,_,F,W,G,C ):- safe1(F,W,G,C) .
+   safe1(F,_,F,_).
+   safe1(F,F,G,F) :- F #\= G
+
+
+ % =============================================================
+ % 4.2. The Crossing the Bridge at Night - puzzle
+ %
+ % The puzzle is the following:
+ % Sally, Peter, their Grandma, and their Grandpa have to cross an old
+ % long bridge across a deep valley from west to east during a dark night.
+ % It is dangerous to cross the bridge because the bridge has holes,
+ % i.e., you definitely need to have a flashlight with you to see the
+ % holes, while crossing the bridge.
+ % Furthermore, the old bridge can carry at most two of them at a time
+ % and all 4 persons have the same weight.
+ % If two persons go over the bridge at the same time, they must stay
+ % together as the whole group has only one flashlight, i.e., for
+ % crossing the bridge, they need the time that the slower of both would
+ % need alone.
+ % Now, Sally is fast and can cross the bridge in 5 minutes,
+ % Peter is rather fast and can cross the bridge in 10 minutes.
+ % However, Gradma is slow and needs 20 minutes to cross the bridge,
+ % and Grandpa is even slower and needs 25 minutes.
+ % Furthermore, if e.g. the first two of them have crossed the bridge,
+ % somebody must bring back the flashlight to the other side, such that
+ % the others can also cross the bridge.
+ % How can they organize the crossing over the bridge,
+ % such that the total time is not more than 60 minutes?
+
+ % Use acyclic depth-first search to solve the puzzle!
+ % Write a procedure move2(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle    AND
+ % write a procedure adfsmp20(Path) that describes the legal paths Path
+ % of safe moves from the start state, i.e. all are on the west side
+ % to the end state, i.e., all are on the east side.
+ %
+ % Model the states as
+ % s(Who_does_stay_west, Who_does_stay_east,Where_is_the_flashlight,Time_elapsed).
+ % Hereby, Who_does_stay_west and Who_does_stay_east are lists of those family members
+ % that stay west or east respectively,
+ % and in these lists, each family member is represented
+ % by the time that he or she needs to cross the bridge.
+ % Furthermore, the values for the variable Where_is_the_flashlight are west or east, and
+ % Time_elapsed is the time (in minutes) elapsed so far.
+ %
+ % For example, if the first move is that Peter and Grandma cross the
+ % bridge together, the state reached is s([5,25],[10,20],east,20)
+ %
+ % Finally, there is no difference whether e.g. Peter and Grandma are on the
+ % east side or Grandma and Peter. To avoid that both, [10,20] and [20,10],
+ % are considered as two different legal lists of persons on a side of
+ % the bridge, you shall represent this list only as [10,20].
+ % More general, each list of times representing persons on the same side
+ % of the bridge shall contain the times in ascending order!
+ %
+ % Hints:
+ % 1. To simplify the implementation, you can assume that
+ %    in each move from west to east, 2 persons go together, and in each
+ %    move from east to west, 1 person alone carries the flashlight.
+ % 2. To avoid duplicate solutions by considering both [10,20] and [20,10],
+ %    use the built-in procedure sort/2 and use the operator #=<.
+
+
+
+
+ % =============================================================
+ %
+ % 4.3. The Missionaries and Cannibals-Puzzle
+ %
+ % The puzzle is the following:
+ % 3 missionaries and 3 cannibals have to cross a river from west to east
+ % with a single boat that can only carry two persons, i.e., the boat
+ % carries one or two persons when crossing the river.
+ % However, if the cannibals are in the majority on either side of the
+ % river, they eat the missionaries on this same side of the river.
+ % That is, missionaries on any side of the river are only safe, if the
+ % cannibals never outnumber the missionaries on that side of the river.
+ % Which moves (using the boat) do the 6 persons have to do, such that no
+ % missionary comes into danger to be eaten?
+
+ % Use limited iterative deepening search to solve the puzzle!
+ % Write a procedure move3(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle    AND
+ % write a procedure  lidm30(Path)  that describes one legal path Path
+ % of safe moves from the start state, i.e., that all are on the west side
+ % to the end state, i.e., that all are on the east side.
+ %
+ % Model the states as s(Boat,[M_east,C_east]), where
+ % Boat=1 means the boat is west, Boat=-1 means the boat is east
+ % M_east denotes the number missionaries on the east side
+ % C_east denotes the number cannibals on the east side
+ % e.g., s(1,[2,2]) means that the boat is on the west side with
+ % one missionary and one cannibal, and all others are east.
+ %
+ % Write a procedure move3(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle   AND
+ % write a procedure  lidm3(Path)  that describes one legal path Path
+ % of safe moves from the start state, i.e., that all are on the west side
+ % to the end state, i.e., that all are on the east side.
+ %
+ % Hint:
+ % The solution is similar to the puzzle of farmer, wolf, goat, and cabbage
+ % except for the description of states and moves.
+
+   lidm30(P) :-
+      S = s(1,[3,3]) ,    % all missionaries and cannivals stay in west
+      D = s(-1,[0,0]) ,    % all missionaries and cannibals stay east
+      lidm(move3,S,D,P) .   %  find a shortest path of moves to cross the river
+
+   move3( s(B,[M,C]) , s(B2,[M2,C2]) ) :-
+      B #= -B2 ,                   % boat on the other side
+      M2*(M2-C2)*(M2-3) #= 0 ,     % safe, enough missionars on both sides
+      abs(M-M2)+abs(C-C2) #=< 2 ,  % max 2 persons per boat
+      1 #=< (M-M2+C-C2) * B ,      % at least 1 person moves. If B=1, M>M2 or C>C2 % and
+      [M2,C2] ins 0..3 ,           % no of missionars and cannibals is in 0..3
+      label([M2,C2]).              % choose values for M2 and C2
+
+
+ % =====================================================
+ % 4.4. The mug puzzle:
+ %
+ % The puzzle is the following:
+ % You have one 8 liter mug, one 5 liter mug, and one 3 liter mug.
+ % At the beginning, the 8 liter mug is full, the other 2 mugs are empty.
+ % You can fill the water contained in one mug into another mug,
+ % subject to the constraint that there is no scale given on the mugs.
+ % Therefore, in each move, you can completely fill a mug or completely
+ % empty a mug only.
+ % The goal is to get a filling of exactly 4 liter in the 8 liter
+ % mug and 4 liter in the 5 liter mug.
+
+ % Model the states as s(Mug8,Mug5,Mug3), where
+ % Mug8 means the filling of the 8 liter mug
+ % Mug5 means the filling of the 5 liter mug
+ % Mug3 means the filling of the 3 liter mug
+ % e.g., s(5,0,3) means that the 8 liter mug contains 5 liter,
+ % the 5 liter mug is empty, and the 3 liter mug if full.
+ % This state can be reached from the initial state by using the 8 liter
+ % mug to fill the 3 liter mug.
+ %
+ % Use limited iterative deepening search to solve the puzzle!
+ % Write a procedure move4(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle   AND
+ % write a procedure  lidm40(Path)  that describes one legal path Path
+ % of safe moves from the start state to the end state.
+ %
+ % Hint:
+ % The solution is similar to the puzzle of farmer, wolf, goat, and
+ % cabbage except for the description of states and moves.
+
+
+   lidm40(P) :-
+      S = s(8,0,0) ,    % mug8 is full
+      D = s(4,4,0) ,    % goal state
+      lidm(move4,S,D,P) .   %  find a shortest path of moves to fill the mugs.
+
+   move4(s(A,B,C), s(X,Y,Z)) :-
+      [A, X] ins 0..8,
+      [B, Y] ins 0..5,
+      [C, Z] ins 0..3,
+      A+B+C #= X+Y+Z,
+      A+B+C #= 8,
+      label([A,B,C,X,Y,Z]).
+
+
+ % =======================================================================
+ % 4.5. The shift puzzle
+ %
+ % The puzzle is the following:
+ % Given is a distribution of pieces 1,...,11 in a 3x4 grid with one
+ % empty space. For this subtask, use the following puzzle:
+ %    3  2
+ %    4  1  5
+ %    6  7  8
+ %    9 10 11
+ % The goal is to find a sequence of moves such that the
+ % grid with the 11 pieces looks like
+ %       1  2
+ %    3  4  5
+ %    6  7  8
+ %    9 10 11
+ % Here, the top-left corner is empty.
+ % In each move, you can only move an adjacent piece to the empty place.
+ % And you can move the pieces left,right,up, or down, but no piece may
+ % be moved out of the 3x4 grid.
+
+ % Model each state as List of twelve numbers, e.g. [3,2,0,...],
+ % starting with the numbers of the pieces located in the top row.
+ % Hereby, 0 represents the empty place.
+ %
+ % Use limited iterative deepening search to solve the puzzle!
+ % Write a procedure move5(State1,State2) that describes one legal and
+ % safe move from a state State1 to a state State2 in this puzzle   AND
+ % write a procedure  lidm50(Path)  that describes one legal path Path
+ % of moves from the start state given above to the final state given
+ % above.
+ %
+ % Attention!
+ % Not all pairs of start states and destination states can be
+ % transformed into each other, i.e., if such a combination of
+ % start state and destination state is given,
+ % iterative deepening will search forever.
+ % Furthermore, the runtime grows exponentially, depending on the
+ % length of the path from start state to end state.
+ % This is one of the reasons why adfsmp in general does NOT work here.
+ %
+ % Hints:
+ % 1. The shift puzzle moves the empty piece (the 0) to a neighbour
+ %    destination, i.e. swaps it with left, right, above or below
+ %    neighbour.
+ %
+ % 2. Look at program p4.2_swap.pl to see how to swap two elements in a
+ %    list that fulfil a particular constraint.
+ %
+
+
+
+
+
+
+ % =======================================================================
+ % 4.6. The generalized nim game
+ %
+ %      Nim is a two-player strategy game with the following rules.
+ %      There is one box with S tokens, e.g. S=16 or S=23 or S= ... .
+ %      Two players (called Max and Min) alternatingly have to take tokens from this box.
+ %      Within each move, the player in turn has to take either 4 or 6 or 9 tokens.
+ %
+ %      The player who is in turn and cannot take anything in a move anymore
+ %      because less than 4 tokens are left over, looses N+1 points if N tokens are left over.
+ %
+ %      Write a program that computes the following for a given number of tokens in the box.
+ %      Starting with the given number of tokens in the box, your program shall simulate 2 strong players,
+ %      i.e., each player does one of the best possible moves whenever it is his turn.
+ %      Your program shall show the list P of intermediate states, i.e.,
+ %      how many tokens are in the box after each move.
+ %      And your program shall show the number V of points won by the player who does the first move
+ %
+ %      For example,
+ %            ?- eval(25,P,V).  -->   P = [25, 16, 10, 1] , V=2
+ %      This answer means:
+ %      For the first player starting with 25 tokens in the box, one best move is to take 9 tokens.
+ %      Now, for the opponent, starting with 16 tokens in the box, one best move is to take 6 tokens.
+ %      Now, for the first player starting with 10 tokens in the box, a best move is to take 9 tokens.
+ %      This leaves 1 token in the box.
+ %      Now, the opponent cannot move anymore and looses 1+1=2 points and the player wins V=2 points.
+ %
+ %      Your program shall contain a procedure move6/2 that computes the destination states
+ %      for given start states and can e.g. be called like this
+ %            ?- move6( 25 , S2 ) .   -->    S2 = 16
+ %            ?- move6( 16 , S3 ) .   -->    S3 = 10
+ %
+ %      Hints:
+ %      1. You can copy and reuse the procedure eval from the program tic-tac-toe.pl ,
+ %         except that eval/3 should call move6/2 instead of move/2.
+ %      2. You need to adapt the implementations of the procedures move6/2 and evalfinal/2 in such a way
+ %         that they support the nim game.
+ %      3. Your procedures move6/2 and evalfinal/2 could be significantly shorter
+ %         than the corresponding procedures in the program tic-tac-toe.pl
+
+
+

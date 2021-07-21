@@ -1,0 +1,5 @@
+
+Testing file a6.pl  
+Query1: Your solution is most likely equivalent to the wanted solution.  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  

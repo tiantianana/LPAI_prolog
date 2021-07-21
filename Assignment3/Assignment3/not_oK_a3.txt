@@ -1,0 +1,12 @@
+
+Testing file a3.pl  
+Query1: Your solution is most likely equivalent to the wanted solution.  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  
+Query4: Your solution is most likely equivalent to the wanted solution.  
+Query5: Your solution is most likely equivalent to the wanted solution.  
+Query6: Your solution is most likely equivalent to the wanted solution.  
+Query7: rule   q37(_39732,_39734,_39736)  :- ...  not found in your program.  
+Query8: Your solution is most likely equivalent to the wanted solution.  
+Query9: Your solution is most likely equivalent to the wanted solution.  
+Query10: Your solution is most likely equivalent to the wanted solution.  

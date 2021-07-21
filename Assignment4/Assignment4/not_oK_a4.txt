@@ -1,0 +1,21 @@
+
+Testing file a4.pl  
+Query1: Your solution is most likely equivalent to the wanted solution.  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  
+Query4: Your solution to subtask 4.4 is NOT equal to the wanted solution 4.4 .
+ For example, for move4(s(1,4,3),_4120) 
+ move4(s(1,4,3),s(8,-3,3)) 
+ is shown in your program's output, but not by the wanted solution  
+Query5: Your solution is most likely equivalent to the wanted solution.  
+Query6: Your solution is most likely equivalent to the wanted solution.  
+Your solution is most likely equivalent to the wanted solution.  
+Query10: Your solution is most likely equivalent to the wanted solution.  
+Query20: Your solution is most likely equivalent to the wanted solution.  
+Your solution is most likely equivalent to the wanted solution.  
+Your solution to subtask 4.40 is NOT equal to the wanted solution 4.40 .
+ For example, for lidm40(_4118) 
+ lidm40([s(8,0,0),s(3,5,0),s(3,2,3),s(6,2,0),s(6,0,2),s(1,5,2),s(1,4,3),s(4,4,0)]) 
+ is shown by the wanted solution, but not in your program's output  
+Your solution is most likely equivalent to the wanted solution.  
+Your solution is most likely equivalent to the wanted solution.  

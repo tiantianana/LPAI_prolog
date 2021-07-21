@@ -1,0 +1,17 @@
+Query1: Your solution is most likely equivalent to the wanted solution.  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  
+Query4: Your solution is most likely equivalent to the wanted solution.  
+Query5: Your solution is most likely equivalent to the wanted solution.  
+Query6: Your solution is most likely equivalent to the wanted solution.  
+Query7: Your solution is most likely equivalent to the wanted solution.  
+Query8: Your solution is most likely equivalent to the wanted solution.  
+Query9: Your solution is most likely equivalent to the wanted solution.  
+Query10: Your solution is most likely equivalent to the wanted solution.  
+Query11: Your solution is most likely equivalent to the wanted solution.  
+Query12: Your solution is most likely equivalent to the wanted solution.  
+Query13: Your solution is most likely equivalent to the wanted solution.  
+Query14: Your solution is most likely equivalent to the wanted solution.  
+Query15: Your solution is most likely equivalent to the wanted solution.  
+
+Testing file a2.pl  

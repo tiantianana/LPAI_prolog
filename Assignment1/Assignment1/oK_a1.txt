@@ -1,0 +1,34 @@
+Query1: Your solution is most likely equivalent to the wanted solution.  
+Query2: Your solution is most likely equivalent to the wanted solution.  
+Query3: Your solution is most likely equivalent to the wanted solution.  
+Query4: Your solution is most likely equivalent to the wanted solution.  
+Query5: Your solution is most likely equivalent to the wanted solution.  
+Query6: Your solution is most likely equivalent to the wanted solution.  
+Query7: Your solution is most likely equivalent to the wanted solution.  
+Query8: Your solution is most likely equivalent to the wanted solution.  
+Query9: Your solution is most likely equivalent to the wanted solution.  
+Query10: Your solution is most likely equivalent to the wanted solution.  
+Query11: Your solution is most likely equivalent to the wanted solution.  
+Query12: Your solution is most likely equivalent to the wanted solution.  
+Query13: Your solution is most likely equivalent to the wanted solution.  
+Query14: Your solution is most likely equivalent to the wanted solution.  
+Query15: Your solution is most likely equivalent to the wanted solution.  
+Query16: Your solution is most likely equivalent to the wanted solution.  
+Query17: Your solution is most likely equivalent to the wanted solution.  
+Query18: Your solution is most likely equivalent to the wanted solution.  
+Query19: Your solution is most likely equivalent to the wanted solution.  
+Query20: Your solution is most likely equivalent to the wanted solution.  
+Query21: Your solution is most likely equivalent to the wanted solution.  
+Query22: Your solution is most likely equivalent to the wanted solution.  
+Query23: Your solution is most likely equivalent to the wanted solution.  
+Query24: Your solution is most likely equivalent to the wanted solution.  
+OK: Your database state to subtask 25 shows that a solution to query q20(_12578) returns a result that is not returned by a solution to query q21(_12594) .
+  
+OK: Your database state to subtask 26 shows that a solution to query q21(_12578) returns a result that is not returned by a solution to query q20(_12594) .
+  
+OK: Your database state to subtask 27 shows that a solution to query q20(_12578) returns a result that is not returned by a solution to query q21(_12594) .
+  
+OK: Your database state to subtask 27 shows that a solution to query q21(_12578) returns a result that is not returned by a solution to query q20(_12594) .
+  
+
+Testing file a1.pl  
