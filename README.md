@@ -3,6 +3,7 @@
 All asignments done during the course <br/>
 Language: Prolog
 Operating System: windows
+IDE: Visual Studio Code
 
 # Course content
 1. Prolog as a database language <br/>
